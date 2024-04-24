@@ -4,10 +4,7 @@ The afl-launcher script automates the setup and execution of multiple AFL (Ameri
 
 ## Quick Start
 - Ensure you have afl/afl++ installed.
-- `screen` must be installed to manage multiple sessions. Install `screen` using your package manager, for example:
-  ```bash
-  sudo apt-get install screen  # Ubuntu/Debian
-  ```
+- `screen` must be installed to manage multiple sessions.
 - Prepare your input directory with seed files for fuzzing.
 - Set up your fuzzing binary that AFL will use.
 
