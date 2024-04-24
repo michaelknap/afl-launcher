@@ -29,16 +29,24 @@ NUM_SLAVES=$(nproc --ignore=1)  # Ignore 1 core
 # Define power schedules to cycle through
 declare -a POWER_SCHEDULES=("fast" "coe" "exploit" "lin" "quad" "explore" "seek" "rare" "mmopt")
 
-# Start the master instance in a new GNOME terminal tab
+# Start the master instance in a new screen session with the -D flag
 echo "Starting master instance..."
-gnome-terminal --tab -- bash -c "afl-fuzz -D -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -M master -- '$HARNESS_PATH' @@; exec bash"
+screen -dmS afl-master bash -c "afl-fuzz -D -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -M master -- '$HARNESS_PATH' @@; exec bash"
 
 # Wait a bit to ensure the master instance initializes properly
 sleep 10
 
-# Start slave instances in separate GNOME terminal tabs
+# Check if the master process is still running using screen session list
+if ! screen -list | grep -q "afl-master"; then
+    echo "Master instance did not start properly or crashed. Check for errors."
+    exit 1
+fi
+
+# Start slave instances in separate screen sessions
 echo "Starting slave instances..."
 for (( i=1; i<NUM_SLAVES; i++ )); do  # Start one less slave than cores to leave one core free for system tasks
     POWER=${POWER_SCHEDULES[$(( (i-1) % ${#POWER_SCHEDULES[@]} ))]}
-    gnome-terminal --tab -- bash -c "afl-fuzz -D -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -S slave$i -p $POWER -- '$HARNESS_PATH' @@; exec bash"
+    screen -dmS afl-slave$i bash -c "afl-fuzz -D -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -S slave$i -p $POWER -- '$HARNESS_PATH' @@; exec bash"
 done
+
+echo "Fuzzing campaign started. Use 'screen -r afl-master' to attach to the master session or 'screen -r afl-slaveX' for slave sessions."
