@@ -1,6 +1,6 @@
 # afl-launcher
 
-The afl-launcher script automates the setup and execution of multiple AFL (American Fuzzy Lop) instances. It utilizes `afl-cmin` to minimize the corpus before launching fuzzing campaign and employs various power schedule options to maximize coverage. This script is designed for personal use and launches each instance in a `gnome-terminal` tab. Please modify it as necessary to fit your own setup.
+The afl-launcher script automates the setup and execution of multiple AFL (American Fuzzy Lop) instances. It utilizes `afl-cmin` to minimize the corpus before launching fuzzing campaign and employs various power schedule options to maximize coverage. This script is designed for personal use and launches each instance in a `gnome-terminal` tab. Modify it as necessary to fit your own setup.
 
 ## Quick Start
 - Ensure you have afl/afl++ installed.
