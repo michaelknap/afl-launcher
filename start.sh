@@ -31,7 +31,7 @@ declare -a POWER_SCHEDULES=("fast" "coe" "exploit" "lin" "quad" "explore" "seek"
 
 # Start the master instance in a new GNOME terminal tab
 echo "Starting master instance..."
-gnome-terminal --tab -- bash -c "afl-fuzz -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -M master -- '$HARNESS_PATH' @@; exec bash"
+gnome-terminal --tab -- bash -c "afl-fuzz -D -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -M master -- '$HARNESS_PATH' @@; exec bash"
 
 # Wait a bit to ensure the master instance initializes properly
 sleep 10
@@ -40,5 +40,5 @@ sleep 10
 echo "Starting slave instances..."
 for (( i=1; i<NUM_SLAVES; i++ )); do  # Start one less slave than cores to leave one core free for system tasks
     POWER=${POWER_SCHEDULES[$(( (i-1) % ${#POWER_SCHEDULES[@]} ))]}
-    gnome-terminal --tab -- bash -c "afl-fuzz -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -S slave$i -p $POWER -- '$HARNESS_PATH' @@; exec bash"
+    gnome-terminal --tab -- bash -c "afl-fuzz -D -i '$MINIMIZED_DIR' -o '$OUTPUT_DIR' -S slave$i -p $POWER -- '$HARNESS_PATH' @@; exec bash"
 done
